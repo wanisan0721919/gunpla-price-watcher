@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
+
+import time
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import re
-import time
 
 # アフィリエイトタグ
 AFFILIATE_TAG = "infonatumi-22"
@@ -9,44 +13,21 @@ AFFILIATE_TAG = "infonatumi-22"
 # 監視URL
 URL = "https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3A4469780051%2Cp_6%3AAN1VRQENFRJN5"
 
-# ヘッダーでUser-Agent設定
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
-    "Accept-Language": "ja-JP,ja;q=0.9",
-    "Connection": "keep-alive",
-    "Upgrade-Insecure-Requests": "1",
-    "TE": "Trailers"
-}
+# Chromeドライバーのヘッドレス設定
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # ヘッドレスモード
+driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=chrome_options)
 
-# リトライ回数
-MAX_RETRIES = 5
-retries = 0
+# URLを開く
+driver.get(URL)
 
-# ステータスコード 200 を取得するまでリトライ
-while retries < MAX_RETRIES:
-    res = requests.get(URL, headers=headers)
-    if res.status_code == 200:
-        print("🌐 リクエスト成功")
-        break
-    else:
-        print(f"🚫 ステータスコード: {res.status_code}、再試行中...")
-        retries += 1
-        time.sleep(30)  # 30秒待機して再試行
-
-# ステータスコードが200以外の場合は終了
-if res.status_code != 200:
-    print("❌ リクエストに失敗しました。終了します。")
-    exit()
-
-# HTMLパース
-soup = BeautifulSoup(res.text, 'html.parser')
-print("🔍 HTMLパース完了")
+# ページのHTMLを取得
+html = driver.page_source
+soup = BeautifulSoup(html, 'html.parser')
 
 # 商品ブロックを取得（セレクタは調整必要）
 items = soup.select('.s-result-item')
-print(f"🛒 商品件数: {len(items)} 件")
 
-# 商品情報を抽出
 for item in items:
     title_tag = item.select_one('h2 span')
     current_price_tag = item.select_one('.a-price .a-offscreen')
@@ -62,13 +43,11 @@ for item in items:
     asin_match = re.search(r'/dp/([A-Z0-9]{10})', link_tag['href'])
     asin = asin_match.group(1) if asin_match else None
 
-    print(f"▶️ 処理中: {title}")
-
     if current_price <= original_price and asin:
-        print(f"✅ 該当商品: {title}")
+        print(f"? {title}")
         print(f"価格: \{current_price}（定価: \{original_price}）")
         print(f"https://www.amazon.co.jp/dp/{asin}/?tag={AFFILIATE_TAG}")
         print("-" * 40)
 
-# 完了メッセージ
-print("🏁 スクリプト終了")
+# ブラウザを閉じる
+driver.quit()
