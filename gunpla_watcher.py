@@ -4,6 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+print("✅ スクリプト開始")  # ← ① スクリプトが実行されたか確認
+
 # アフィリエイトタグ
 AFFILIATE_TAG = "infonatumi-22"
 
@@ -12,14 +14,20 @@ URL = "https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3A4469
 
 # ヘッダーでUser-Agent設定
 headers = {
-    "User-Agent": "Mozilla/5.0"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Accept-Language": "ja-JP,ja;q=0.9"
 }
 
+print("🌐 Amazonにアクセス中...")  # ← ② アクセス開始
 res = requests.get(URL, headers=headers)
+print(f"📄 ステータスコード: {res.status_code}")  # ← ③ 成功してるか確認
+
 soup = BeautifulSoup(res.text, 'html.parser')
+print("🔍 HTMLパース完了")  # ← ④ パースできたか確認
 
 # 商品ブロックを取得（セレクタは調整必要）
 items = soup.select('.s-result-item')
+print(f"🛒 商品件数: {len(items)} 件")  # ← ⑤ 抽出できてるか確認
 
 for item in items:
     title_tag = item.select_one('h2 span')
@@ -36,8 +44,12 @@ for item in items:
     asin_match = re.search(r'/dp/([A-Z0-9]{10})', link_tag['href'])
     asin = asin_match.group(1) if asin_match else None
 
+    print(f"▶️ 処理中: {title}")  # ← ⑥ 商品ごとの処理状況
+
     if current_price <= original_price and asin:
-        print(f"? {title}")
+        print(f"✅ 該当商品: {title}")
         print(f"価格: \{current_price}（定価: \{original_price}）")
         print(f"https://www.amazon.co.jp/dp/{asin}/?tag={AFFILIATE_TAG}")
         print("-" * 40)
+
+print("🏁 スクリプト終了")  # ← ⑦ 最後に完了確認
