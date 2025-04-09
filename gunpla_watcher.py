@@ -33,7 +33,7 @@ while retries < MAX_RETRIES:
     else:
         print(f"🚫 ステータスコード: {res.status_code}、再試行中...")
         retries += 1
-        time.sleep(5)  # 5秒待機して再試行
+        time.sleep(10)  # 10秒待機して再試行
 
 # ステータスコードが200以外の場合は終了
 if res.status_code != 200:
