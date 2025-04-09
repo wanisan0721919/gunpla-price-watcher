@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 name: Gunpla Price Watcher
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # –ˆ“ú21i“ú–{ŠÔj‚ÉÀsiUTC¨JST +9hj
-  workflow_dispatch:  # è“®Às‚à‚Å‚«‚é
+    - cron: '0 12 * * *'  # æ¯æ—¥21æ™‚ï¼ˆæ—¥æœ¬æ™‚é–“ï¼‰ã«å®Ÿè¡Œï¼ˆUTCâ†’JST +9hï¼‰
+  workflow_dispatch:  # æ‰‹å‹•å®Ÿè¡Œã‚‚ã§ãã‚‹
 
 jobs:
   run-script:
