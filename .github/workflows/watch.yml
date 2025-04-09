@@ -1,0 +1,24 @@
+name: Gunpla Price Watcher
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # 毎日21時（日本時間）に実行（UTC→JST +9h）
+  workflow_dispatch:  # 手動実行もできる
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run gunpla watcher script
+        run: python gunpla_watcher.py
