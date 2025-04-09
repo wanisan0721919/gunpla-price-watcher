@@ -1,14 +1,14 @@
-import requests
+ï»¿import requests
 from bs4 import BeautifulSoup
 import re
 
-# ƒAƒtƒBƒŠƒGƒCƒgƒ^ƒO
-AFFILIATE_TAG = "yourtag-22"
+# ã‚¢ãƒ•ã‚£ãƒªã‚¨ã‚¤ãƒˆã‚¿ã‚°
+AFFILIATE_TAG = "infonatumi-22"
 
-# ŠÄ‹URL
-URL = "https://www.amazon.co.jp/ƒKƒ“ƒvƒ‰ƒXƒgƒA-Amazon-co-jp/s?rh=n%3A4469780051%2Cp_6%3AAN1VRQENFRJN5"
+# ç›£è¦–URL
+URL = "https://www.amazon.co.jp/ã‚¬ãƒ³ãƒ—ãƒ©ã‚¹ãƒˆã‚¢-Amazon-co-jp/s?rh=n%3A4469780051%2Cp_6%3AAN1VRQENFRJN5"
 
-# ƒwƒbƒ_[‚ÅUser-Agentİ’è
+# ãƒ˜ãƒƒãƒ€ãƒ¼ã§User-Agentè¨­å®š
 headers = {
     "User-Agent": "Mozilla/5.0"
 }
@@ -16,7 +16,7 @@ headers = {
 res = requests.get(URL, headers=headers)
 soup = BeautifulSoup(res.text, 'html.parser')
 
-# ¤•iƒuƒƒbƒN‚ğæ“¾iƒZƒŒƒNƒ^‚Í’²®•K—vj
+# å•†å“ãƒ–ãƒ­ãƒƒã‚¯ã‚’å–å¾—ï¼ˆã‚»ãƒ¬ã‚¯ã‚¿ã¯èª¿æ•´å¿…è¦ï¼‰
 items = soup.select('.s-result-item')
 
 for item in items:
@@ -36,6 +36,6 @@ for item in items:
 
     if current_price <= original_price and asin:
         print(f"? {title}")
-        print(f"‰¿Ši: \{current_price}i’è‰¿: \{original_price}j")
+        print(f"ä¾¡æ ¼: \{current_price}ï¼ˆå®šä¾¡: \{original_price}ï¼‰")
         print(f"https://www.amazon.co.jp/dp/{asin}/?tag={AFFILIATE_TAG}")
         print("-" * 40)
