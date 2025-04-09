@@ -4,6 +4,7 @@ import time
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import re
 
@@ -16,7 +17,14 @@ URL = "https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3A4469
 # Chromeドライバーのヘッドレス設定
 chrome_options = Options()
 chrome_options.add_argument("--headless")  # ヘッドレスモード
-driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=chrome_options)
+chrome_options.add_argument("--no-sandbox")  # 安全でない操作を避ける
+chrome_options.add_argument("--disable-dev-shm-usage")
+
+# サービスオブジェクトを使用してChromeDriverのパスを設定
+chrome_service = Service(executable_path='/usr/local/bin/chromedriver')
+
+# WebDriverを作成
+driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
 # URLを開く
 driver.get(URL)
@@ -45,7 +53,7 @@ for item in items:
 
     if current_price <= original_price and asin:
         print(f"? {title}")
-        print(f"価格: \{current_price}（定価: \{original_price}）")
+        print(f"価格: ¥{current_price}（定価: ¥{original_price}）")
         print(f"https://www.amazon.co.jp/dp/{asin}/?tag={AFFILIATE_TAG}")
         print("-" * 40)
 
