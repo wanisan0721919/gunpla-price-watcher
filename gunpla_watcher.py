@@ -32,13 +32,13 @@ driver.get("https://www.amazon.co.jp/RG-%E6%A9%9F%E5%8B%95%E6%88%A6%E5%A3%AB%E3%
 
 # 商品がロードされるのを待機（最大30秒）
 WebDriverWait(driver, 30).until(
-    EC.presence_of_element_located((By.XPATH, '//*[@class="a-price-whole"]'))
+    EC.presence_of_element_located((By.XPATH, '//*[@id="productTitle"]'))
 )
 
-# 商品名の取得
+# 商品名の取得（get_attribute("value")を使用）
 product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]').get_attribute("value")
 
-# 商品価格の取得
+# 商品価格の取得（テキストとして直接取得）
 price_element = driver.find_element(By.XPATH, '//*[@class="a-price-whole"]')
 product_price = price_element.text if price_element else "価格情報が見つかりませんでした"
 
