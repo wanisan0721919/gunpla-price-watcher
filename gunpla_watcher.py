@@ -7,6 +7,7 @@ import chromedriver_autoinstaller
 from bs4 import BeautifulSoup
 import platform
 from time import sleep
+import time
 
 # ログの設定
 logging.basicConfig(level=logging.INFO)
@@ -23,18 +24,23 @@ chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--headless")  # ヘッドレスモード
+chrome_options.add_argument("--disable-gpu")  # GPUを無効化 (一部環境での安定性向上)
+chrome_options.add_argument("--window-size=1920x1080")  # ウィンドウサイズを指定（エラー回避用）
 
-# ヘッドレスブラウザの自動化検出を回避するオプション
-chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-
-# ユーザーエージェントを一般的なものに変更
-chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
+# ユーザーエージェントを変更
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+chrome_options.add_argument(f"user-agent={user_agent}")
 
 # Braveのバイナリを指定（もしくはGoogle Chrome）
 chrome_options.binary_location = BRAVE_PATH
 
 # 対応するchromedriverを自動インストール
 chromedriver_autoinstaller.install()
+
+# 古いchromedriverがインストールされている場合は削除
+chromedriver_path = "/usr/local/bin/chromedriver"
+if os.path.exists(chromedriver_path):
+    os.remove(chromedriver_path)
 
 # WebDriver作成
 driver = webdriver.Chrome(options=chrome_options)
@@ -77,7 +83,7 @@ def extract_data_from_html(file_path):
         return 'データ抽出に失敗', 'データ抽出に失敗', 'データ抽出に失敗'
 
 def main():
-    url = 'https://www.amazon.co.jp/BANDAI-SPIRITS-%E3%83%90%E3%83%B3%E3%83%80%E3%82%A4-%E3%82%B9%E3%83%94%E3%83%AA%E3%83%83%E3%83%84-%E3%82%A2%E3%83%A1%E3%82%A4%E3%82%B8%E3%83%B3%E3%82%B0%E3%82%BA%E2%82%AC%E3%82%B3%E3%82%AD%E3%82%92%E3%82%B8%E3%83%91%E3%82%A4%E3%82%B0%E3%83%AB%E3%83%9E%E3%82%B8%E3%83%BC%E5%AF%92%E6%85%8B-%E3%82%AA%E3%82%B5%E3%83%96%E3%82%AB%E3%83%BB%E5%85%A8%E3%82%89%E9%9B%BB%E5%AD%90%CE%A9%E5%93%9A%E6%92%AC%E7%92%B0/dp/B08GYBQQVV'
+    url = 'https://www.amazon.co.jp/BANDAI-SPIRITS-%E3%83%90%E3%83%B3%E3%83%80%E3%82%A4-%E3%82%B9%E3%83%94%E3%83%AA%E3%83%83%E3%83%84-%E3%82%A2%E3%83%A1%E3%82%A4%E3%82%B8%E3%83%B3%E3%82%B0%E3%82%BA%E3%82%B0/dp/B0DV371Z9P/?_encoding=UTF8&pd_rd_w=CFob6&content-id=amzn1.sym.bcc66df3-c2cc-4242-967e-174aec86af7a%3Aamzn1.symc.a9cb614c-616d-4684-840d-556cb89e228d&pf_rd_p=bcc66df3-c2cc-4242-967e-174aec86af7a&pf_rd_r=1SHZY3R56BF6XH1F4JCA&pd_rd_wg=fqpv8&pd_rd_r=9ac08d43-bee1-4746-87a4-819f2368455c&ref_=pd_hp_d_atf_ci_mcx_mr_ca_hp_atf_d'  # 実際のURLに変更してください
     html_file = download_html(url)
 
     if html_file:
