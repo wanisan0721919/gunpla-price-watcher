@@ -1,90 +1,66 @@
-import os
 import time
-import random
+import logging
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
-from datetime import datetime
+from selenium.common.exceptions import NoSuchElementException
 
-# 商品URLリスト（必要に応じて追加）
-product_urls = [
-    "https://www.amazon.co.jp/dp/B0C9S6XZP2",
-    "https://www.amazon.co.jp/dp/B0CF5QL1TK"
-]
+# ログ設定
+logging.basicConfig(level=logging.INFO)
 
-# 保存ディレクトリの作成
-output_dir = "amazon_scrape_output"
-os.makedirs(output_dir, exist_ok=True)
+def create_driver():
+    # Chromeオプションの設定
+    options = Options()
+    options.headless = True  # ヘッドレスモードでブラウザを起動
 
-# ヘッドレスChrome設定
-options = Options()
-options.add_argument("--headless")
-options.add_argument("--disable-gpu")
-options.add_argument("--no-sandbox")
-options.add_argument(f'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36')
+    # WebDriverをインストールしてインスタンスを作成
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    
+    return driver
 
-driver = webdriver.Chrome(options=options)
-
-def extract_data_from_html(html):
-    soup = BeautifulSoup(html, "html.parser")
-
-    # タイトル
-    title_tag = soup.select_one("#productTitle")
-    title = title_tag.get_text(strip=True) if title_tag else "タイトル取得失敗"
-
-    # 価格：複数候補をチェック
-    price_selectors = [
-        "span.a-price-whole",
-        "#priceblock_ourprice",
-        "#priceblock_dealprice",
-        "#price_inside_buybox",
-        ".a-price > span"
-    ]
-    price = None
-    for selector in price_selectors:
-        tag = soup.select_one(selector)
-        if tag:
-            price = tag.get_text(strip=True)
-            break
-    if not price:
-        price = "価格取得失敗"
-
-    # メイン画像
-    image_tag = soup.select_one("#landingImage") or soup.select_one("#imgTagWrapperId img")
-    image_url = image_tag["src"] if image_tag else "画像取得失敗"
-
-    return title, price, image_url
-
-# 処理スタート
-for idx, url in enumerate(product_urls):
+def fetch_gunpla_info(url):
+    driver = create_driver()
+    
     try:
-        print(f"[INFO] 処理中: {url}")
+        # URLにアクセス
         driver.get(url)
-        time.sleep(random.uniform(3, 6))  # Bot対策のためランダムな待機
+        time.sleep(3)  # ページが完全にロードされるまで待機
 
-        # ページHTML取得
-        html = driver.page_source
+        # 商品タイトルの取得
+        try:
+            title = driver.find_element(By.ID, "productTitle").text
+            logging.info(f"商品タイトル: {title}")
+        except NoSuchElementException:
+            title = "商品タイトルの取得に失敗"
+            logging.error("商品タイトルの取得に失敗")
 
-        # データ抽出
-        title, price, image_url = extract_data_from_html(html)
+        # 価格情報の取得
+        try:
+            price = driver.find_element(By.CSS_SELECTOR, "span.a-price-whole").text
+            logging.info(f"価格: {price}")
+        except NoSuchElementException:
+            price = "価格情報が見つかりませんでした"
+            logging.error("価格情報が見つかりませんでした")
 
-        # HTML・スクショ保存
-        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        html_file = os.path.join(output_dir, f"product_{idx+1}_{ts}.html")
-        img_file = os.path.join(output_dir, f"product_{idx+1}_{ts}.png")
+        # 商品画像の取得
+        try:
+            image_url = driver.find_element(By.ID, "landingImage").get_attribute("src")
+            logging.info(f"画像URL: {image_url}")
+        except NoSuchElementException:
+            image_url = "画像の取得に失敗"
+            logging.error("画像の取得に失敗")
 
-        with open(html_file, "w", encoding="utf-8") as f:
-            f.write(html)
-
-        driver.save_screenshot(img_file)
-
-        # 出力
-        print(f"タイトル: {title}")
-        print(f"価格   : {price}")
+        # 結果の出力
+        print(f"商品タイトル: {title}")
+        print(f"価格: {price}")
         print(f"画像URL: {image_url}")
-        print("-" * 40)
 
-    except Exception as e:
-        print(f"[ERROR] 処理失敗: {e}")
+    finally:
+        driver.quit()
 
-driver.quit()
+if __name__ == "__main__":
+    # 監視したいAmazonのURLを設定
+    url = "https://amzn.to/4cwpLBY"
+    fetch_gunpla_info(url)
