@@ -16,6 +16,10 @@ chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--headless")  # ヘッドレスモード
 
+chrome_options.add_argument(
+    "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+)
+
 # Braveのバイナリを指定（もしくはGoogle Chrome）
 chrome_options.binary_location = BRAVE_PATH
 
