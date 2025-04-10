@@ -14,10 +14,13 @@ else:
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-# chrome_options.add_argument("--headless")  # ヘッドレスモードを外す
+chrome_options.add_argument("--headless")  # ヘッドレスモード
 
 # Braveのバイナリを指定
 chrome_options.binary_location = BRAVE_PATH
+
+# --user-data-dirを追加していないか確認（削除）
+# chrome_options.add_argument("--user-data-dir=/path/to/some/directory")  # この行があった場合、削除またはコメントアウト
 
 # chromedriver_autoinstallerを使って対応するバージョンをインストール
 chromedriver_autoinstaller.install()
