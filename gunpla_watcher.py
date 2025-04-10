@@ -15,6 +15,11 @@ import pickle
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# 一時的なディレクトリを作成
+user_data_dir = "/tmp/chrome_user_data"
+if not os.path.exists(user_data_dir):
+    os.makedirs(user_data_dir)
+
 # OSに応じて適切なブラウザパスを設定
 if platform.system() == "Windows":
     BRAVE_PATH = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
