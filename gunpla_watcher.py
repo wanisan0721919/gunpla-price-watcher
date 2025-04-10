@@ -5,6 +5,7 @@ import chromedriver_autoinstaller
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 # OSに応じて適切なブラウザパスを設定
 if platform.system() == "Windows":
@@ -16,9 +17,8 @@ else:
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--headless")  # ヘッドレスモード
-
-# Braveのバイナリを指定
+chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
+# --headless は削除
 chrome_options.binary_location = BRAVE_PATH
 
 # chromedriver_autoinstallerを使って対応するバージョンをインストール
@@ -52,6 +52,9 @@ try:
     print(f"商品価格: {product_price.text}")
 except Exception as e:
     print(f"価格の取得に失敗しました: {e}")
+
+# 少し待機してから終了
+time.sleep(5)
 
 # WebDriverを終了
 driver.quit()
