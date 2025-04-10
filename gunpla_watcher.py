@@ -3,8 +3,9 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import chromedriver_autoinstaller
 
-# Braveブラウザの実行パス
-BRAVE_PATH = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+# Braveブラウザの実行パス（Linux環境用）
+BRAVE_PATH = "/usr/bin/brave-browser"
+
 
 # Chromeオプション設定
 chrome_options = Options()
