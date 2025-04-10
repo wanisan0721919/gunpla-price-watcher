@@ -2,6 +2,7 @@ import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import chromedriver_autoinstaller
+from selenium.webdriver.common.by import By
 
 # OSに応じて適切なブラウザパスを設定
 if platform.system() == "Windows":
@@ -13,7 +14,7 @@ else:
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--headless")  # ヘッドレスモード
+# chrome_options.add_argument("--headless")  # ヘッドレスモードを外す
 
 # Braveのバイナリを指定
 chrome_options.binary_location = BRAVE_PATH
@@ -26,14 +27,17 @@ driver = webdriver.Chrome(options=chrome_options)
 
 # 任意の操作を実行
 driver.get("https://www.amazon.co.jp/")  # 例としてAmazonにアクセス
-print(driver.title)  # ページタイトルを表示
 
-from selenium.webdriver.common.by import By
+# ページタイトルを表示
+print("Page title:", driver.title)
 
-# 価格と商品名を取得
-product_titles = driver.find_elements(By.CLASS_NAME, "s-title")  # 商品名を指定
-product_prices = driver.find_elements(By.CLASS_NAME, "a-price-whole")  # 価格を指定
+# 商品名と価格を取得
+product_titles = driver.find_elements(By.XPATH, "//span[contains(@class, 's-title')]")
+product_prices = driver.find_elements(By.XPATH, "//span[contains(@class, 'a-price-whole')]")
 
 # 結果を表示
 for title, price in zip(product_titles, product_prices):
     print(f"商品名: {title.text}, 価格: ¥{price.text}")
+
+# WebDriverを終了
+driver.quit()
