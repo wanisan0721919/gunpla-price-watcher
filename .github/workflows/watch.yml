@@ -49,3 +49,10 @@ jobs:
       - name: Run gunpla_watcher script
         run: |
           python gunpla_watcher.py
+
+      # アーティファクトのアップロード
+      - name: Upload HTML artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: amazon-page
+          path: amazon_page.html
