@@ -35,11 +35,16 @@ WebDriverWait(driver, 30).until(
     EC.presence_of_element_located((By.XPATH, '//*[@id="corePrice_feature_div"]//span[@class="a-price-whole"]'))
 )
 
-# 商品名の取得（get_attribute("value")を使用）
-product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]').get_attribute("value")
+# 商品名の取得（get_attribute("value")を使用せず、textを取得）
+product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]').text
 
-# 商品価格の取得
-product_price = driver.find_element(By.XPATH, '//*[@id="corePrice_feature_div"]//span[@class="a-price-whole"]').text
+# 商品価格の取得（find_elementsを使用して複数の要素があった場合に対応）
+price_elements = driver.find_elements(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[2]')
+if price_elements:
+    product_price = price_elements[0].text
+else:
+    # 価格が見つからない場合のフォールバック
+    product_price = "価格情報が見つかりませんでした"
 
 # 結果を表示
 print(f"商品名: {product_title}")
