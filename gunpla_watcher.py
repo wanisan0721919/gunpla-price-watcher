@@ -32,15 +32,17 @@ driver.get("https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3
 
 # ページが完全に読み込まれるのを待機（最大30秒）
 WebDriverWait(driver, 30).until(
-    EC.presence_of_element_located((By.XPATH, '//span[contains(@class,"s-title")]'))
+    EC.presence_of_all_elements_located((By.XPATH, '//h2[contains(@class,"a-size-base-plus a-spacing-none a-color-base a-text-normal")]'))
 )
 
 # スクロールを実行（ページ下まで）
 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-# 商品タイトルと価格のXPath
+# 商品タイトルのXPath（そのまま）
 product_titles = driver.find_elements(By.XPATH, '//h2[contains(@class,"a-size-base-plus a-spacing-none a-color-base a-text-normal")]/span[1]')
-product_prices = driver.find_elements(By.XPATH, '//span[contains(@class,"a-offscreen")]')
+
+# 価格のXPathを修正
+product_prices = driver.find_elements(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[2]')
 
 # 結果を表示
 for title, price in zip(product_titles, product_prices):
