@@ -7,6 +7,7 @@ import chromedriver_autoinstaller
 from bs4 import BeautifulSoup
 import platform
 from time import sleep
+import random
 import time
 
 # ログの設定
@@ -23,9 +24,11 @@ else:
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--headless")  # ヘッドレスモード
 chrome_options.add_argument("--disable-gpu")  # GPUを無効化 (一部環境での安定性向上)
 chrome_options.add_argument("--window-size=1920x1080")  # ウィンドウサイズを指定（エラー回避用）
+
+# ヘッドレスモードを無効化
+# chrome_options.add_argument("--headless")  # この行をコメントアウトしてヘッドレスモードを無効にする
 
 # ユーザーエージェントを変更
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -33,6 +36,11 @@ chrome_options.add_argument(f"user-agent={user_agent}")
 
 # Braveのバイナリを指定（もしくはGoogle Chrome）
 chrome_options.binary_location = BRAVE_PATH
+
+# 自動化検出回避
+chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+chrome_options.add_argument("--disable-infobars")
+chrome_options.add_argument("--disable-extensions")
 
 # 対応するchromedriverを自動インストール
 chromedriver_autoinstaller.install()
@@ -48,7 +56,14 @@ driver = webdriver.Chrome(options=chrome_options)
 def download_html(url):
     try:
         driver.get(url)
-        sleep(5)  # ページが完全に読み込まれるまで待機
+        
+        # ランダムなスリープ時間を入れて、人間らしい行動にする
+        sleep_time = random.uniform(2, 5)  # 2秒から5秒の間でランダムに待機
+        time.sleep(sleep_time)
+        
+        # ページが完全に読み込まれるまで待機
+        sleep(5)
+        
         html_content = driver.page_source
         # HTMLファイルとして保存
         filename = "amazon_page.html"
