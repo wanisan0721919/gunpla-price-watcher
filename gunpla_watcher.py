@@ -9,7 +9,6 @@ import platform
 from time import sleep
 import time
 
-
 # ログの設定
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,6 +30,11 @@ chrome_options.binary_location = BRAVE_PATH
 
 # 対応するchromedriverを自動インストール
 chromedriver_autoinstaller.install()
+
+# 古いchromedriverがインストールされている場合は削除
+chromedriver_path = "/usr/local/bin/chromedriver"
+if os.path.exists(chromedriver_path):
+    os.remove(chromedriver_path)
 
 # WebDriver作成
 driver = webdriver.Chrome(options=chrome_options)
