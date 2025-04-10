@@ -38,8 +38,12 @@ print("Page title:", driver.title)
 
 # 商品名と価格を取得する前に、要素がロードされるのを待つ
 wait = WebDriverWait(driver, 10)  # 最大10秒間待機
-product_titles = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[contains(@class, 's-title')]")))
-product_prices = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[contains(@class, 'a-price-whole')]")))
+
+# 商品タイトルのXPath（例: Amazonの商品タイトル）
+product_titles = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[@class='a-text-normal']")))
+
+# 価格のXPath（例: Amazonの価格）
+product_prices = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[@class='a-price-whole']")))
 
 # 結果を表示
 for title, price in zip(product_titles, product_prices):
