@@ -7,14 +7,13 @@ import chromedriver_autoinstaller
 if platform.system() == "Windows":
     BRAVE_PATH = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"  # Windows用
 else:
-    BRAVE_PATH = "/usr/bin/brave-browser"  # Linux用（GitHub Actions環境）
+    BRAVE_PATH = "/usr/bin/google-chrome-stable"  # Linux環境でGoogle Chromeを使用
 
 # Chromeオプション設定
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-# ヘッドレスモードを使わない場合はコメントアウト
-# chrome_options.add_argument("--headless")  # ヘッドレスモード
+chrome_options.add_argument("--headless")  # ヘッドレスモード
 
 # Braveのバイナリを指定
 chrome_options.binary_location = BRAVE_PATH
