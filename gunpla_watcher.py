@@ -3,6 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import chromedriver_autoinstaller
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # OSに応じて適切なブラウザパスを設定
 if platform.system() == "Windows":
@@ -34,9 +36,10 @@ driver.get("https://www.amazon.co.jp/")  # 例としてAmazonにアクセス
 # ページタイトルを表示
 print("Page title:", driver.title)
 
-# 商品名と価格を取得
-product_titles = driver.find_elements(By.XPATH, "//span[contains(@class, 's-title')]")
-product_prices = driver.find_elements(By.XPATH, "//span[contains(@class, 'a-price-whole')]")
+# 商品名と価格を取得する前に、要素がロードされるのを待つ
+wait = WebDriverWait(driver, 10)  # 最大10秒間待機
+product_titles = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[contains(@class, 's-title')]")))
+product_prices = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[contains(@class, 'a-price-whole')]")))
 
 # 結果を表示
 for title, price in zip(product_titles, product_prices):
