@@ -50,9 +50,10 @@ jobs:
         run: |
           python gunpla_watcher.py
 
-      # アーティファクトをアップロード
+      # アーティファクトをアップロード（隠しファイルも含めてアップロード）
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: gunpla-data
-          path: ./path-to-your-artifact
+          path: amazon_page.html  # 実際のファイルパスに修正
+          include-hidden-files: true  # 隠しファイルもアップロード
