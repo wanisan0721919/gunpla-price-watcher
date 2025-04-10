@@ -36,7 +36,7 @@ WebDriverWait(driver, 30).until(
 )
 
 # 商品タイトルと価格を取得
-product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]')
+product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]/span')
 product_price = driver.find_element(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[2]')
 
 # 結果表示
