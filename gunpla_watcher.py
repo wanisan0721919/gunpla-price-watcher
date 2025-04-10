@@ -6,8 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-import tempfile
-import os
 
 # OSに応じて適切なブラウザパスを設定
 if platform.system() == "Windows":
@@ -15,16 +13,12 @@ if platform.system() == "Windows":
 else:
     BRAVE_PATH = "/usr/bin/google-chrome-stable"  # Linux環境でGoogle Chromeを使用
 
-# ユニークなユーザーデータディレクトリを一時フォルダ内に作成
-user_data_dir = tempfile.mkdtemp()
-
 # Chromeオプション設定
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
-chrome_options.add_argument(f"--user-data-dir={user_data_dir}")  # ユニークなユーザーデータディレクトリを指定
-# --headless は削除
+# --user-data-dirは省略
 chrome_options.binary_location = BRAVE_PATH
 
 # chromedriver_autoinstallerを使って対応するバージョンをインストール
@@ -64,9 +58,3 @@ time.sleep(5)
 
 # WebDriverを終了
 driver.quit()
-
-# 一時的に作成したユーザーデータディレクトリを削除
-try:
-    os.rmdir(user_data_dir)
-except OSError:
-    print(f"ディレクトリ削除失敗: {user_data_dir}")
