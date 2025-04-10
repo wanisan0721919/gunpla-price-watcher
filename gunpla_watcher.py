@@ -9,6 +9,7 @@ import platform
 from time import sleep
 import random
 import time
+import pickle
 
 # ログの設定
 logging.basicConfig(level=logging.INFO)
@@ -24,51 +25,58 @@ else:
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+# chrome_options.add_argument("--headless")  # ヘッドレスモード
 chrome_options.add_argument("--disable-gpu")  # GPUを無効化 (一部環境での安定性向上)
 chrome_options.add_argument("--window-size=1920x1080")  # ウィンドウサイズを指定（エラー回避用）
 
-# ヘッドレスモードを無効化
-# chrome_options.add_argument("--headless")  # この行をコメントアウトしてヘッドレスモードを無効にする
+# --user-data-dirを追加
+chrome_options.add_argument("--user-data-dir=/path/to/unique/directory")
 
-# ユーザーエージェントを変更
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-chrome_options.add_argument(f"user-agent={user_agent}")
+# ユーザーエージェントをランダムに変更
+user_agents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36"
+]
+chrome_options.add_argument(f"user-agent={random.choice(user_agents)}")
 
 # Braveのバイナリを指定（もしくはGoogle Chrome）
 chrome_options.binary_location = BRAVE_PATH
 
-# 自動化検出回避
-chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-chrome_options.add_argument("--disable-infobars")
-chrome_options.add_argument("--disable-extensions")
-
 # 対応するchromedriverを自動インストール
 chromedriver_autoinstaller.install()
-
-# 古いchromedriverがインストールされている場合は削除
-chromedriver_path = "/usr/local/bin/chromedriver"
-if os.path.exists(chromedriver_path):
-    os.remove(chromedriver_path)
 
 # WebDriver作成
 driver = webdriver.Chrome(options=chrome_options)
 
+# クッキーを保存するパス
+cookie_file = "cookies.pkl"
+
+def load_cookies():
+    """保存されたクッキーを読み込む"""
+    if os.path.exists(cookie_file):
+        with open(cookie_file, 'rb') as file:
+            cookies = pickle.load(file)
+            for cookie in cookies:
+                driver.add_cookie(cookie)
+        logger.info("クッキーを読み込みました")
+
+def save_cookies():
+    """クッキーを保存する"""
+    with open(cookie_file, 'wb') as file:
+        pickle.dump(driver.get_cookies(), file)
+    logger.info("クッキーを保存しました")
+
 def download_html(url):
     try:
         driver.get(url)
-        
-        # ランダムなスリープ時間を入れて、人間らしい行動にする
-        sleep_time = random.uniform(2, 5)  # 2秒から5秒の間でランダムに待機
-        time.sleep(sleep_time)
-        
-        # ページが完全に読み込まれるまで待機
-        sleep(5)
-        
+        sleep(random.uniform(3, 7))  # ページが完全に読み込まれるまでランダムに待機
         html_content = driver.page_source
         # HTMLファイルとして保存
         filename = "amazon_page.html"
         with open(filename, 'w', encoding='utf-8') as file:
             file.write(html_content)
+        save_cookies()  # クッキー保存
         logger.info(f"HTMLファイルを保存しました: {filename}")
         return filename
     except Exception as e:
@@ -98,6 +106,7 @@ def extract_data_from_html(file_path):
         return 'データ抽出に失敗', 'データ抽出に失敗', 'データ抽出に失敗'
 
 def main():
+    load_cookies()  # 保存されたクッキーを読み込む
     url = 'https://www.amazon.co.jp/BANDAI-SPIRITS-%E3%83%90%E3%83%B3%E3%83%80%E3%82%A4-%E3%82%B9%E3%83%94%E3%83%AA%E3%83%83%E3%83%84-%E3%82%A2%E3%83%A1%E3%82%A4%E3%82%B8%E3%83%B3%E3%82%B0%E3%82%BA%E3%82%B0/dp/B0DV371Z9P/?_encoding=UTF8&pd_rd_w=CFob6&content-id=amzn1.sym.bcc66df3-c2cc-4242-967e-174aec86af7a%3Aamzn1.symc.a9cb614c-616d-4684-840d-556cb89e228d&pf_rd_p=bcc66df3-c2cc-4242-967e-174aec86af7a&pf_rd_r=1SHZY3R56BF6XH1F4JCA&pd_rd_wg=fqpv8&pd_rd_r=9ac08d43-bee1-4746-87a4-819f2368455c&ref_=pd_hp_d_atf_ci_mcx_mr_ca_hp_atf_d'  # 実際のURLに変更してください
     html_file = download_html(url)
 
