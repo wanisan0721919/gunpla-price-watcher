@@ -9,6 +9,7 @@ import platform
 from time import sleep
 import time
 
+
 # ログの設定
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
