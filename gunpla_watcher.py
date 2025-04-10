@@ -1,12 +1,14 @@
-# -*- coding: utf-8 -*-
-
-import time
-import requests
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+import chromedriver_autoinstaller
+import time
+import requests
+from bs4 import BeautifulSoup
 import re
+
+# Braveブラウザの実行パス
+BRAVE_PATH = "/usr/bin/brave-browser"  # ここでBraveのパスを指定（例: Ubuntuの場合）
 
 # アフィリエイトタグ
 AFFILIATE_TAG = "infonatumi-22"
@@ -14,17 +16,20 @@ AFFILIATE_TAG = "infonatumi-22"
 # 監視URL
 URL = "https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3A4469780051%2Cp_6%3AAN1VRQENFRJN5"
 
-# Chromeドライバーのヘッドレス設定
+# Chromeオプション設定
 chrome_options = Options()
 chrome_options.add_argument("--headless")  # ヘッドレスモード
 chrome_options.add_argument("--no-sandbox")  # 安全でない操作を避ける
 chrome_options.add_argument("--disable-dev-shm-usage")
 
-# サービスオブジェクトを使用してChromeDriverのパスを設定
-chrome_service = Service(executable_path='/usr/local/bin/chromedriver')
+# Braveのバイナリを指定
+chrome_options.binary_location = BRAVE_PATH
+
+# chromedriver_autoinstallerを使って対応するバージョンをインストール
+chromedriver_autoinstaller.install()
 
 # WebDriverを作成
-driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+driver = webdriver.Chrome(options=chrome_options)
 
 # URLを開く
 driver.get(URL)
