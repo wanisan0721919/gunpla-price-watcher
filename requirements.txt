@@ -1,3 +1,4 @@
-﻿selenium
+﻿chromedriver-autoinstaller
+selenium
 beautifulsoup4
 requests
