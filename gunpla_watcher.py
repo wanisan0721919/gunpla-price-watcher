@@ -13,7 +13,8 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("user-agent=Mozilla/5.0")
 
 # ★ 自動でChromeDriverを適切なバージョンで取得して使う
-service = Service(ChromeDriverManager().install())
+# バージョンを明示指定（Chrome 135 に対応するドライバー）
+service = Service(ChromeDriverManager(version="135.0.7049.84").install())
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
 driver.get("https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3A4469780051%2Cp_6%3AAN1VRQENFRJN5")
