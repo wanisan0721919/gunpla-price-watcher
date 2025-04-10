@@ -28,7 +28,7 @@ chromedriver_autoinstaller.install()
 driver = webdriver.Chrome(options=chrome_options)
 
 # 任意の商品ページにアクセス
-driver.get("https://www.amazon.co.jp/dp/B01N5IB20Q")  # 例としてガンプラの商品ページURL
+driver.get("https://www.amazon.co.jp/RG-%E6%A9%9F%E5%8B%95%E6%88%A6%E5%A3%AB%E3%82%AC%E3%83%B3%E3%83%80%E3%83%A0UC-%E3%83%A6%E3%83%8B%E3%82%B3%E3%83%BC%E3%83%B3%E3%82%AC%E3%83%B3%E3%83%80%E3%83%A0-144%E3%82%B9%E3%82%B1%E3%83%BC%E3%83%AB-%E8%89%B2%E5%88%86%E3%81%91%E6%B8%88%E3%81%BF%E3%83%97%E3%83%A9%E3%83%A2%E3%83%87%E3%83%AB/dp/B08XWBS3WM/ref=sr_1_1?dib=eyJ2IjoiMSJ9.ydGC_Br1xhMandLowCJHyOTJDFXeRrf2UfWFUSFPF-6hQ6NeGOCrCpDMiP7A21Df_royV4Ace4QB-tV7Q5lMVh7kmDJJQ1g6H2vZyPwNiecSteZOGHPlt0rVZWyLu3o8pfSls-ecoLVA3O7VWYrerx3rAzNHNPLL-DaVr7qZvvp_ZC6Duk_KMQWd8lJNK_C1y4XVKfXJpunenThXhv6NzPScS0C7LMJWTCi6pMKS1ulSs4tCAyhyoSbrTb2dwmtRgVruE_u5NC3QHQyBKL-zS8GsbbS7bddke3C0L0lxklA.BVeOmAMFAzU9f5nEP8OjY-vhDtYA7XVMpmm6A-_6ODQ&dib_tag=se&m=AN1VRQENFRJN5&qid=1744251790&refinements=p_6%3AAN1VRQENFRJN5&s=hobby&sr=1-1")  # 例としてガンプラの商品ページURL
 
 # 商品タイトルが読み込まれるのを待機（最大30秒）
 WebDriverWait(driver, 30).until(
