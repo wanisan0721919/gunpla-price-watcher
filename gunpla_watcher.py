@@ -42,16 +42,19 @@ driver = webdriver.Chrome(options=chrome_options)
 def download_html(url):
     try:
         driver.get(url)
-        sleep(5)  # ページが完全に読み込まれるまで待機
+        sleep(5)
         html_content = driver.page_source
-        # HTMLファイルとして保存
-        filename = "amazon_page.html"
-        with open(filename, 'w', encoding='utf-8') as file:
+
+        # HTMLのmeta charsetを書き換える（上書き or 追加）
+        if '<head>' in html_content:
+            html_content = html_content.replace('<head>', '<head><meta charset="UTF-8">')
+
+        with open("amazon_page.html", "w", encoding="utf-8") as file:
             file.write(html_content)
-        logger.info(f"HTMLファイルを保存しました: {filename}")
-        return filename
+        logger.info("HTMLファイルを保存しました: amazon_page.html")
+        return "amazon_page.html"
     except Exception as e:
-        logger.error(f"HTMLの保存に失敗しました: {e}")
+        logger.error(f"HTMLの保存に失敗: {e}")
         return None
 
 def extract_data_from_html(file_path):
