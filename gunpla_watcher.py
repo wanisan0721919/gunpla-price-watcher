@@ -35,9 +35,9 @@ HREFS = [
 for HREF in HREFS:
     driver.get(HREF)
     
-    # 商品タイトルの取得
+    # 商品タイトルの取得（別の方法で再確認）
     try:
-        title = driver.find_element(By.CSS_SELECTOR, "span#productTitle").text  # idが'productTitle'の代わりにCSSセレクタを使う
+        title = driver.find_element(By.CSS_SELECTOR, "span#productTitle").text
         print("[INFO]  title :", title)
     except Exception as e:
         print(f"[ERROR] 商品タイトルの取得に失敗: {e}")
@@ -55,7 +55,7 @@ for HREF in HREFS:
 
     # 商品画像URLの取得
     try:
-        img = driver.find_element(By.XPATH, '//img[@id="landingImage"]').get_attribute("src")  # 画像のXPathも最新に
+        img = driver.find_element(By.XPATH, '//img[@id="landingImage"]').get_attribute("src")
         print("[INFO]  img :", img)
     except Exception as e:
         print(f"[ERROR] 画像の取得に失敗: {e}")
