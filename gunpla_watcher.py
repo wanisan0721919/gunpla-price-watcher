@@ -1,42 +1,40 @@
+import platform
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+import chromedriver_autoinstaller
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager  # ←追加
 
+# OSに応じて適切なブラウザパスを設定
+if platform.system() == "Windows":
+    BRAVE_PATH = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+else:
+    BRAVE_PATH = "/usr/bin/google-chrome-stable"
+
+# Chromeオプション設定
 chrome_options = Options()
-chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("user-agent=Mozilla/5.0")
+chrome_options.add_argument("--headless")  # ヘッドレスモード
 
-# ★ 自動でChromeDriverを適切なバージョンで取得して使う
-# バージョンを明示指定（Chrome 135 に対応するドライバー）
-service = Service(ChromeDriverManager(version="135.0.7049.84").install())
-driver = webdriver.Chrome(service=service, options=chrome_options)
+# Braveのバイナリを指定（もしくはGoogle Chrome）
+chrome_options.binary_location = BRAVE_PATH
 
+# 対応するchromedriverを自動インストール
+chromedriver_autoinstaller.install()
+
+# WebDriver作成
+driver = webdriver.Chrome(options=chrome_options)
+
+# Amazonガンプラページへアクセス
 driver.get("https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3A4469780051%2Cp_6%3AAN1VRQENFRJN5")
 
-wait = WebDriverWait(driver, 10)
+# タイトルと価格をXPathで取得
+product_titles = driver.find_elements(By.XPATH, '//h2[contains(@class,"a-size-base-plus a-spacing-none a-color-base a-text-normal")]/span[1]')
+product_prices = driver.find_elements(By.XPATH, '//span[contains(@class,"a-offscreen")]')
 
-try:
-    title_elements = wait.until(EC.presence_of_all_elements_located(
-        (By.XPATH, '//h2[contains(@class,"a-size")]/a/span')
-    ))
+# 結果を表示
+for title, price in zip(product_titles, product_prices):
+    print(f"商品名: {title.text}, 価格: {price.text}")
 
-    price_elements = driver.find_elements(
-        By.XPATH, '//span[contains(@class,"a-offscreen")]'
-    )
-
-    for i in range(min(len(title_elements), len(price_elements))):
-        title = title_elements[i].text
-        price = price_elements[i].text
-        print(f"{i+1}. 商品名: {title} / 価格: {price}")
-
-except Exception as e:
-    print(f"エラーが発生しました: {e}")
-
-finally:
-    driver.quit()
+# WebDriverを終了
+driver.quit()
