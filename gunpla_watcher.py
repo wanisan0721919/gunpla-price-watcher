@@ -36,7 +36,7 @@ WebDriverWait(driver, 30).until(
 )
 
 # 商品名の取得（get_attribute("value")を使用せず、textを取得）
-product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]').text
+product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]').get_attribute("value")
 
 # 商品価格の取得（find_elementsを使用して複数の要素があった場合に対応）
 price_elements = driver.find_elements(By.XPATH, '//*[@id="corePriceDisplay_desktop_feature_div"]/div[1]/span[3]/span[2]/span[2]')
