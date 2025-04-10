@@ -35,8 +35,8 @@ WebDriverWait(driver, 30).until(
     EC.presence_of_element_located((By.XPATH, '//*[@id="corePrice_feature_div"]//span[@class="a-price-whole"]'))
 )
 
-# 商品名の取得
-product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]').text
+# 商品名の取得（get_attribute("value")を使用）
+product_title = driver.find_element(By.XPATH, '//*[@id="productTitle"]').get_attribute("value")
 
 # 商品価格の取得
 product_price = driver.find_element(By.XPATH, '//*[@id="corePrice_feature_div"]//span[@class="a-price-whole"]').text
