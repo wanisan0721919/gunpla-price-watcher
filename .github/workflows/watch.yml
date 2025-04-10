@@ -52,7 +52,7 @@ jobs:
 
       # アーティファクトのアップロード
       - name: Upload HTML artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: amazon-page
           path: amazon_page.html
