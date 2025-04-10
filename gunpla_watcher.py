@@ -54,4 +54,28 @@ def fetch_gunpla_info(url):
         # 価格情報の取得
         try:
             price = driver.find_element(By.CSS_SELECTOR, "span.a-price-whole").text
-            logging.info(f
+            logging.info(f"価格: {price}")
+        except NoSuchElementException:
+            price = "価格情報が見つかりませんでした"
+            logging.error("価格情報が見つかりませんでした")
+
+        # 商品画像の取得
+        try:
+            image_url = driver.find_element(By.ID, "landingImage").get_attribute("src")
+            logging.info(f"画像URL: {image_url}")
+        except NoSuchElementException:
+            image_url = "画像の取得に失敗"
+            logging.error("画像の取得に失敗")
+
+        # 結果の出力
+        print(f"商品タイトル: {title}")
+        print(f"価格: {price}")
+        print(f"画像URL: {image_url}")
+
+    finally:
+        driver.quit()
+
+if __name__ == "__main__":
+    # 監視したいAmazonのURLを設定
+    url = "https://amzn.to/4cwpLBY"
+    fetch_gunpla_info(url)
