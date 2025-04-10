@@ -96,7 +96,7 @@ def main():
             # GitHubのAPIを使ってファイルをアップロード
             # GitHub ActionsのAPIトークンを使ってアップロード処理を書く方法を選択できます
             # ここではアーティファクトをアップロードする処理を行います
-            from github import InputGitHub
+            #from github import InputGitHub
 
             # アーティファクトのアップロード
             # ここでamazon_page.htmlファイルをアップロードする
