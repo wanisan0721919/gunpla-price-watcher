@@ -2,8 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import chromedriver_autoinstaller
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import platform
 
 # OSに応じて適切なブラウザパスを設定
@@ -36,25 +34,31 @@ HREFS = [
 # 各商品の情報を取得
 for HREF in HREFS:
     driver.get(HREF)
-
-    # 商品名の取得
-    WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.ID, "productTitle").text)
-    )
-    title = driver.find_element(By.ID, "productTitle").text
-    print("[INFO]  title :", title)
+    
+    # 商品タイトルの取得
+    try:
+        title = driver.find_element(By.ID, "productTitle").text
+        print("[INFO]  title :", title)
+    except Exception as e:
+        print(f"[ERROR] 商品タイトルの取得に失敗: {e}")
 
     # 商品価格の取得
-    price_elements = driver.find_elements(By.XPATH, '//*[@class="a-price-whole"]')
-    if price_elements:
-        price = price_elements[0].text
-    else:
-        price = "価格情報が見つかりませんでした"
-    print("[INFO]  price :", price)
+    try:
+        price_elements = driver.find_elements(By.XPATH, '//*[@class="a-price-whole"]')
+        if price_elements:
+            price = price_elements[0].text
+        else:
+            price = "価格情報が見つかりませんでした"
+        print("[INFO]  price :", price)
+    except Exception as e:
+        print(f"[ERROR] 価格の取得に失敗: {e}")
 
     # 商品画像URLの取得
-    img = driver.find_element(By.XPATH, '//div[@id="imgTagWrapperId"]/img').get_attribute("src")
-    print("[INFO]  img :", img)
+    try:
+        img = driver.find_element(By.XPATH, '//div[@id="imgTagWrapperId"]/img').get_attribute("src")
+        print("[INFO]  img :", img)
+    except Exception as e:
+        print(f"[ERROR] 画像の取得に失敗: {e}")
 
 # WebDriverを終了
 driver.quit()
