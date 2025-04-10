@@ -14,7 +14,7 @@ else:
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-#chrome_options.add_argument("--headless")  # ヘッドレスモード
+chrome_options.add_argument("--headless")  # ヘッドレスモード
 
 # Braveのバイナリを指定（もしくはGoogle Chrome）
 chrome_options.binary_location = BRAVE_PATH
@@ -27,6 +27,14 @@ driver = webdriver.Chrome(options=chrome_options)
 
 # Amazonガンプラページへアクセス
 driver.get("https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3A4469780051%2Cp_6%3AAN1VRQENFRJN5")
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+# 商品がロードされるのを待機（最大10秒）
+WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.XPATH, '//span[contains(@class,"a-offscreen")]'))
+)
+print(driver.page_source)
 
 # タイトルと価格をXPathで取得
 product_titles = driver.find_elements(By.XPATH, '//h2[contains(@class,"a-size-base-plus a-spacing-none a-color-base a-text-normal")]/span[1]')
