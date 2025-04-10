@@ -39,7 +39,7 @@ for HREF in HREFS:
 
     # 商品名の取得
     WebDriverWait(driver, 30).until(
-        EC.presence_of_element_located((By.ID, "productTitle"))
+        EC.presence_of_element_located((By.ID, "productTitle").text)
     )
     title = driver.find_element(By.ID, "productTitle").text
     print("[INFO]  title :", title)
