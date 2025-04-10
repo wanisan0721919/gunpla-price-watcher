@@ -29,11 +29,16 @@ jobs:
       # Google ChromeとChromeDriverをインストール
       - name: Install Google Chrome and ChromeDriver
         run: |
+          # 必要なツールのインストール
           sudo apt-get update
           sudo apt-get install -y wget curl unzip
+
+          # Google Chromeのインストール
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb
           sudo apt --fix-broken install -y
+
+          # ChromeDriverのバージョンを取得
           CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
           wget https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
@@ -45,9 +50,9 @@ jobs:
         run: |
           python gunpla_watcher.py
 
-      # アーティファクトのアップロード
+      # アーティファクトをアップロード
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gunpla-data
           path: ./path-to-your-artifact
