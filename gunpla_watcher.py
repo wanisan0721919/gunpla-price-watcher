@@ -23,13 +23,7 @@ else:
 chrome_options = Options()
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-# chrome_options.add_argument("--headless")  # ヘッドレスモード
-chrome_options.add_argument("--disable-gpu")  # GPUを無効化 (一部環境での安定性向上)
-chrome_options.add_argument("--window-size=1920x1080")  # ウィンドウサイズを指定（エラー回避用）
-
-# ユーザーエージェントを変更
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-chrome_options.add_argument(f"user-agent={user_agent}")
+chrome_options.add_argument("--headless")  # ヘッドレスモード
 
 # Braveのバイナリを指定（もしくはGoogle Chrome）
 chrome_options.binary_location = BRAVE_PATH
@@ -83,7 +77,7 @@ def extract_data_from_html(file_path):
         return 'データ抽出に失敗', 'データ抽出に失敗', 'データ抽出に失敗'
 
 def main():
-    url = 'https://www.amazon.co.jp/BANDAI-SPIRITS-%E3%83%90%E3%83%B3%E3%83%80%E3%82%A4-%E3%82%B9%E3%83%94%E3%83%AA%E3%83%83%E3%83%84-%E3%82%A2%E3%83%A1%E3%82%A4%E3%82%B8%E3%83%B3%E3%82%B0%E3%82%BA%E3%82%B0/dp/B0DV371Z9P/?_encoding=UTF8&pd_rd_w=CFob6&content-id=amzn1.sym.bcc66df3-c2cc-4242-967e-174aec86af7a%3Aamzn1.symc.a9cb614c-616d-4684-840d-556cb89e228d&pf_rd_p=bcc66df3-c2cc-4242-967e-174aec86af7a&pf_rd_r=1SHZY3R56BF6XH1F4JCA&pd_rd_wg=fqpv8&pd_rd_r=9ac08d43-bee1-4746-87a4-819f2368455c&ref_=pd_hp_d_atf_ci_mcx_mr_ca_hp_atf_d'  # 実際のURLに変更してください
+    url = 'https://www.amazon.co.jp/BANDAI-SPIRITS-%E3%83%90%E3%83%B3%E3%83%80%E3%82%A4-%E3%82%B9%E3%83%94%E3%83%AA%E3%83%83%E3%83%84-%E3%82%A2%E3%83%A1%E3%82%A4%E3%82%B8%E3%83%B3%E3%82%B0%E3%82%BA%E3%82%B0%E3%83%83%E3%82%AF/dp/B0DV371Z9P/?_encoding=UTF8&pd_rd_w=CFob6&content-id=amzn1.sym.bcc66df3-c2cc-4242-967e-174aec86af7a%3Aamzn1.symc.a9cb614c-616d-4684-840d-556cb89e228d&pf_rd_p=bcc66df3-c2cc-4242-967e-174aec86af7a&pf_rd_r=1SHZY3R56BF6XH1F4JCA&pd_rd_wg=fqpv8&pd_rd_r=9ac08d43-bee1-4746-87a4-819f2368455c&ref_=pd_hp_d_atf_ci_mcx_mr_ca_hp_atf_d'  # 実際のURLに変更してください
     html_file = download_html(url)
 
     if html_file:
@@ -93,6 +87,23 @@ def main():
         logger.info(f"商品タイトル: {title}")
         logger.info(f"価格: {price}")
         logger.info(f"画像URL: {img_url}")
+
+        # GitHub Actionsの場合、アーティファクトとしてアップロード
+        # アーティファクトアップロード部分
+        if os.environ.get("GITHUB_ACTIONS"):
+            from github import Github
+
+            # GitHubのAPIを使ってファイルをアップロード
+            # GitHub ActionsのAPIトークンを使ってアップロード処理を書く方法を選択できます
+            # ここではアーティファクトをアップロードする処理を行います
+            from github import InputGitHub
+
+            # アーティファクトのアップロード
+            # ここでamazon_page.htmlファイルをアップロードする
+            artifact_file = 'amazon_page.html'  # アップロードするファイルのパスを指定
+            # actions/upload-artifactのアップロード処理
+            # 例: GitHub Actionsのワークフローでアップロードするには
+            # upload_artifact(artifact_file)
 
 if __name__ == "__main__":
     main()
