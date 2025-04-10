@@ -4,9 +4,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import platform
 import chromedriver_autoinstaller
+from bs4 import BeautifulSoup
 
 # ログ設定
 logging.basicConfig(level=logging.INFO)
@@ -41,29 +44,42 @@ def fetch_gunpla_info(url):
     try:
         # URLにアクセス
         driver.get(url)
-        time.sleep(3)  # ページが完全にロードされるまで待機
+
+        # ページの読み込みを待つ
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "productTitle"))
+        )
+
+        # ページのHTMLを取得して保存
+        page_source = driver.page_source
+        with open("amazon_page.html", "w", encoding="utf-8") as file:
+            file.write(page_source)
+        logging.info("ページのHTMLを保存しました")
+
+        # BeautifulSoupでHTML解析
+        soup = BeautifulSoup(page_source, "html.parser")
 
         # 商品タイトルの取得
-        try:
-            title = driver.find_element(By.ID, "productTitle").text
-            logging.info(f"商品タイトル: {title}")
-        except NoSuchElementException:
+        title = soup.find("span", {"id": "productTitle"})
+        if title:
+            title = title.text.strip()
+        else:
             title = "商品タイトルの取得に失敗"
             logging.error("商品タイトルの取得に失敗")
-
+        
         # 価格情報の取得
-        try:
-            price = driver.find_element(By.CSS_SELECTOR, "span.a-price-whole").text
-            logging.info(f"価格: {price}")
-        except NoSuchElementException:
+        price = soup.find("span", {"class": "a-price-whole"})
+        if price:
+            price = price.text.strip()
+        else:
             price = "価格情報が見つかりませんでした"
             logging.error("価格情報が見つかりませんでした")
-
+        
         # 商品画像の取得
-        try:
-            image_url = driver.find_element(By.ID, "landingImage").get_attribute("src")
-            logging.info(f"画像URL: {image_url}")
-        except NoSuchElementException:
+        image_url = soup.find("img", {"id": "landingImage"})
+        if image_url:
+            image_url = image_url["src"]
+        else:
             image_url = "画像の取得に失敗"
             logging.error("画像の取得に失敗")
 
@@ -72,6 +88,8 @@ def fetch_gunpla_info(url):
         print(f"価格: {price}")
         print(f"画像URL: {image_url}")
 
+    except TimeoutException:
+        logging.error("ページの読み込みに時間がかかりすぎました")
     finally:
         driver.quit()
 
