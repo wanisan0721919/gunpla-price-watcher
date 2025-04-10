@@ -21,33 +21,30 @@ chrome_options.add_argument("--headless")  # ヘッドレスモード
 # Braveのバイナリを指定
 chrome_options.binary_location = BRAVE_PATH
 
-# --user-data-dirを追加していないか確認（削除）
-# chrome_options.add_argument("--user-data-dir=/path/to/some/directory")  # この行があった場合、削除またはコメントアウト
-
 # chromedriver_autoinstallerを使って対応するバージョンをインストール
 chromedriver_autoinstaller.install()
 
 # WebDriverを作成
 driver = webdriver.Chrome(options=chrome_options)
 
-# 任意の操作を実行
-driver.get("https://www.amazon.co.jp/")  # 例としてAmazonにアクセス
+# Amazonにアクセス
+driver.get("https://www.amazon.co.jp/")
 
 # ページタイトルを表示
-print("Page title:", driver.title)
+print(f"Page title: {driver.title}")
 
-# 商品名と価格を取得する前に、要素がロードされるのを待つ
-wait = WebDriverWait(driver, 10)  # 最大10秒間待機
+# WebDriverWaitを設定して要素が表示されるのを待つ
+wait = WebDriverWait(driver, 10)
 
-# 商品タイトルのXPath（例: Amazonの商品タイトル）
-product_titles = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[@class='a-text-normal']")))
+# 商品タイトルのXPathを指定
+title_xpath = "//*[@id='title_feature_div']//span[@id='productTitle']"
 
-# 価格のXPath（例: Amazonの価格）
-product_prices = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[@class='a-price-whole']")))
-
-# 結果を表示
-for title, price in zip(product_titles, product_prices):
-    print(f"商品名: {title.text}, 価格: ¥{price.text}")
+# 商品タイトルを取得
+try:
+    product_title = wait.until(EC.presence_of_element_located((By.XPATH, title_xpath)))
+    print(f"商品タイトル: {product_title.text}")
+except Exception as e:
+    print(f"エラーが発生しました: {e}")
 
 # WebDriverを終了
 driver.quit()
