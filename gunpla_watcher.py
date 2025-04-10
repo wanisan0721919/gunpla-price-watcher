@@ -36,7 +36,7 @@ print(f"Page title: {driver.title}")
 # WebDriverWaitを設定して要素が表示されるのを待つ
 wait = WebDriverWait(driver, 10)
 
-# 商品タイトルのXPathを指定
+# 商品タイトルのXPathを指定（適切なXPathに変更）
 title_xpath = "//*[@id='title_feature_div']//span[@id='productTitle']"
 
 # 商品タイトルを取得
