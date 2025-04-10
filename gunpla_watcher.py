@@ -32,10 +32,10 @@ driver.get("https://www.amazon.co.jp/ガンプラストア-Amazon-co-jp/s?rh=n%3
 
 # ページが完全に読み込まれるのを待機（最大30秒）
 WebDriverWait(driver, 30).until(
-    EC.presence_of_element_located((By.XPATH, '//h2[contains(@class,"a-size-base-plus a-spacing-none a-color-base a-text-normal")]'))
+    EC.presence_of_element_located((By.XPATH, '//span[contains(@class,"s-title")]'))
 )
 
-# ページが完全に読み込まれた後にスクロールを実行（ページの下まで）
+# スクロールを実行（ページ下まで）
 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 # 商品タイトルと価格のXPath
