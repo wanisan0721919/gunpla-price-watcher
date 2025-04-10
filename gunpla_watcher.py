@@ -3,15 +3,15 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import chromedriver_autoinstaller
 
-# Braveブラウザの実行パス（Linux環境用）
-BRAVE_PATH = "/usr/bin/brave-browser"
-
+# Braveブラウザの実行パス（Windows環境用）
+BRAVE_PATH = r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
 
 # Chromeオプション設定
 chrome_options = Options()
-chrome_options.add_argument("--headless")  # ヘッドレスモード
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+# ヘッドレスモードを使わない場合はコメントアウト
+# chrome_options.add_argument("--headless")  # ヘッドレスモード
 
 # Braveのバイナリを指定
 chrome_options.binary_location = BRAVE_PATH
@@ -21,5 +21,9 @@ chromedriver_autoinstaller.install()
 
 # WebDriverを作成
 driver = webdriver.Chrome(options=chrome_options)
+
+# 任意の操作を実行
+driver.get("https://www.amazon.co.jp/")  # 例としてAmazonにアクセス
+print(driver.title)  # ページタイトルを表示
 
 # スクリプトの続きを記述...
